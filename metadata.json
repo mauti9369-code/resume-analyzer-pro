@@ -1,0 +1,5 @@
+{
+  "name": "Simple AI Resume Analyzer",
+  "description": "A lightweight tool to analyze text-based resumes using AI, providing scores and improvement suggestions.",
+  "requestFramePermissions": []
+}
