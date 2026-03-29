@@ -216,7 +216,7 @@ export default function App() {
       
       const performAnalysis = async () => {
         const analysisPromise = ai.models.generateContent({
-          model: "gemini-flash-latest",
+          model: "gemini-1.5-flash",
           contents: `You are a resume expert. Analyze this resume text and provide a JSON response.
           Resume Text: ${text}
           Provide: 1. Score out of 100, 2. 3-5 clear improvements, 3. 2 improved bullet points.`,
@@ -237,7 +237,7 @@ export default function App() {
         let matchPromise = null;
         if (jobDescription.trim()) {
           matchPromise = ai.models.generateContent({
-            model: "gemini-flash-latest",
+            model: "gemini-1.5-flash",
             contents: `Compare the resume and job description.
             Resume: ${text}
             Job Description: ${jobDescription}
@@ -266,11 +266,12 @@ export default function App() {
       if (matchRes) setMatchResult(JSON.parse(matchRes.text));
 
     } catch (err: any) {
+      console.error('Analysis Error:', err);
       const msg = err.message?.toLowerCase() || '';
       if (msg.includes('overloaded') || msg.includes('high demand')) {
         setError('The AI server is currently experiencing high demand. Please try again in a few seconds.');
       } else {
-        setError('An error occurred during analysis. Please check your file and try again.');
+        setError('Unable to analyze resume right now. Please try again.');
       }
     } finally {
       setIsAnalyzing(false);
@@ -290,7 +291,7 @@ export default function App() {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
       
       const performImprovement = () => ai.models.generateContent({
-        model: "gemini-flash-latest",
+        model: "gemini-1.5-flash",
         contents: `Rewrite the resume in a clean, professional format.
 
 Resume:
@@ -330,11 +331,12 @@ RULES:
       const response = await callGeminiWithRetry(performImprovement);
       setImprovedResume(response.text);
     } catch (err: any) {
+      console.error('Improvement Error:', err);
       const msg = err.message?.toLowerCase() || '';
       if (msg.includes('overloaded') || msg.includes('high demand')) {
         setError('The AI server is currently experiencing high demand. Please try again in a few seconds.');
       } else {
-        setError('An error occurred while improving the resume. Please try again.');
+        setError('Unable to analyze resume right now. Please try again.');
       }
     } finally {
       setIsImproving(false);
